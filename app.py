@@ -2,9 +2,11 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, unset_jwt_cookies
+from flask_cors import CORS
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
@@ -43,8 +45,10 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    print(f"Received data: {data}")  # Debug statement
     user = User.query.filter_by(username=data['username'], password=data['password']).first()
     if not user:
+        print("Invalid credentials")  # Debug statement
         return jsonify({"message": "Invalid credentials"}), 401
     
     access_token = create_access_token(identity=user.id)
