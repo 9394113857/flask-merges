@@ -31,6 +31,11 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     token = TokenBlocklist.query.filter_by(jti=jti).first()
     return token is not None
 
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({"message": "Hello, World!"})
+
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
